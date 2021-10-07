@@ -9,6 +9,12 @@
     "start": "NODE_ENV=development webpack serve --mode development"
   },
   "dependencies": {
+    "@tensorflow-models/coco-ssd": "^2.2.2",
+    "@tensorflow/tfjs": "^3.9.0",
+    "@tensorflow/tfjs-backend-cpu": "^3.9.0",
+    "@tensorflow/tfjs-backend-webgl": "^3.9.0",
+    "@tensorflow/tfjs-converter": "^3.9.0",
+    "@tensorflow/tfjs-core": "^3.9.0",
     "buffer": "^6.0.3",
     "classnames": "^2.3.1",
     "events": "^3.3.0",
@@ -17,7 +23,8 @@
     "immutability-helper": "^3.1.1",
     "raf": "^3.4.1",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-webcam": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",

@@ -6,6 +6,7 @@ import styles from "./App.module.scss";
 const Spinner = () => <span>Loading...</span>;
 
 const PAGES = {
+  coco: lazy(() => import("./Coco")),
   hello: lazy(() => import("./Hello")),
 };
 
