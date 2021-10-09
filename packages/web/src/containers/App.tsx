@@ -7,6 +7,7 @@ const Spinner = () => <span>Loading...</span>;
 
 const PAGES = {
   coco: lazy(() => import("./Coco")),
+  pose: lazy(() => import("./Pose")),
   hello: lazy(() => import("./Hello")),
 };
 
