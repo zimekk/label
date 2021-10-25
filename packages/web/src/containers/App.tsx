@@ -12,7 +12,7 @@ const PAGES = {
 };
 
 const getPage = (location: { hash: string }) => {
-  const [path, hash = Object.keys(PAGES)[0]] =
+  const [, hash = Object.keys(PAGES)[0]] =
     decodeURI(location.hash).match(/^#(.+)/) || [];
   return hash;
 };
@@ -22,9 +22,7 @@ function App() {
 
   useEffect(() =>
     // location is an object like window.location
-    history.listen(({ location, action, ...rest }) =>
-      setPage(getPage(location))
-    )
+    history.listen(({ location }) => setPage(getPage(location)))
   );
 
   const Page = PAGES[page] || null;
