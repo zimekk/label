@@ -17,6 +17,7 @@
     "@tensorflow/tfjs-backend-webgl": "^3.10.0",
     "@tensorflow/tfjs-converter": "^3.10.0",
     "@tensorflow/tfjs-core": "^3.10.0",
+    "@tensorflow/tfjs-vis": "^1.5.1",
     "buffer": "^6.0.3",
     "classnames": "^2.3.1",
     "events": "^3.3.0",
