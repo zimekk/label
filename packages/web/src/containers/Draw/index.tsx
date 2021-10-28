@@ -3,6 +3,7 @@ import { ReactSketchCanvas } from "react-sketch-canvas";
 import cx from "classnames";
 import styles from "./styles.module.scss";
 
+import * as tf from "@tensorflow/tfjs";
 import * as tfvis from "@tensorflow/tfjs-vis";
 import * as model from "./model";
 import { MnistData } from "./data";
@@ -22,7 +23,18 @@ function Pred({ correct, children: prediction }) {
   );
 }
 
-function Image({ children: data, width = 28, height = 28 }) {
+function predict(pixels) {
+  const tensor = tf.browser
+    .fromPixels(pixels)
+    .resizeNearestNeighbor([28, 28])
+    .mean(2)
+    .expandDims(2)
+    .expandDims()
+    .toFloat();
+  console.log(model.predict(tensor.div(255.0)));
+}
+
+function Canvas({ children: data, width = 28, height = 28 }) {
   const canvasRef = useRef();
   useEffect(() => {
     const canvas = Object.assign(canvasRef.current, {
@@ -41,7 +53,19 @@ function Image({ children: data, width = 28, height = 28 }) {
     ctx.putImageData(imageData, 0, 0);
   }, [canvasRef]);
 
-  return <canvas ref={canvasRef} width={width} height={height} />;
+  const handleClick = useCallback(
+    () => predict(canvasRef.current),
+    [canvasRef]
+  );
+
+  return (
+    <canvas
+      ref={canvasRef}
+      width={width}
+      height={height}
+      onClick={handleClick}
+    />
+  );
 }
 
 // https://github.com/vinothpandian/react-sketch-canvas
@@ -56,12 +80,27 @@ export default function Section() {
     () => canvasRef.current.clearCanvas(),
     [canvasRef]
   );
+
   const handleClickExport = useCallback(
     () =>
       canvasRef.current
         .exportImage("png")
         .then(console.log)
         .catch(console.error),
+    [canvasRef]
+  );
+
+  const handleClickPredict = useCallback(
+    () =>
+      canvasRef.current.exportImage("png").then((url) =>
+        new Promise((resolve, reject) => {
+          const img = new Image();
+          img.addEventListener("load", () => resolve(img));
+          img.addEventListener("error", (err) => reject(err));
+          img.src = url;
+          img.setAttribute("crossorigin", "anonymous");
+        }).then(predict)
+      ),
     [canvasRef]
   );
 
@@ -154,14 +193,16 @@ export default function Section() {
 
       <button onClick={handleClickClear}>Clear</button>
       <button onClick={handleClickExport}>Export</button>
+      <button onClick={handleClickPredict}>Predict</button>
 
       <ReactSketchCanvas
         ref={canvasRef}
         className={styles.Canvas}
         width="100"
         height="100"
-        strokeWidth={10}
-        strokeColor="red"
+        strokeWidth={24}
+        strokeColor="white"
+        canvasColor="black"
       />
 
       <section className="title-area">
@@ -190,7 +231,7 @@ export default function Section() {
           {images.map(({ correct, image, prediction }, key) => (
             <PredContainer key={key}>
               <Pred correct={correct}>{prediction}</Pred>
-              <Image>{image}</Image>
+              <Canvas>{image}</Canvas>
             </PredContainer>
           ))}
         </div>
