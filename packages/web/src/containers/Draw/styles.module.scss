@@ -5,3 +5,25 @@
   width: 640px;
   height: 480px;
 }
+
+.PredContainer {
+  display: inline-block;
+  width: 100px;
+  margin: 10px;
+
+  canvas {
+    width: 100px;
+  }
+}
+
+.Pred {
+  font-size: 30px;
+  width: 100px;
+  &__Correct {
+    background-color: #00cf00;
+  }
+
+  &__Incorrect {
+    background-color: red;
+  }
+}

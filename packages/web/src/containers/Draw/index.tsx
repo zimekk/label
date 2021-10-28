@@ -1,17 +1,56 @@
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ReactSketchCanvas } from "react-sketch-canvas";
+import cx from "classnames";
 import styles from "./styles.module.scss";
 
-import { MnistData } from "./data";
-import * as model from "./model";
-// import * as ui from './ui';
-
 import * as tfvis from "@tensorflow/tfjs-vis";
+import * as model from "./model";
+import { MnistData } from "./data";
+
+function PredContainer({ children }) {
+  return <div className={cx(styles.PredContainer)}>{children}</div>;
+}
+
+function Pred({ correct, children: prediction }) {
+  return (
+    <div
+      className={cx(
+        styles.Pred,
+        correct ? styles.Pred__Correct : styles.Pred__Incorrect
+      )}
+    >{`pred: ${prediction}`}</div>
+  );
+}
+
+function Image({ children: data, width = 28, height = 28 }) {
+  const canvasRef = useRef();
+  useEffect(() => {
+    const canvas = Object.assign(canvasRef.current, {
+      width,
+      height,
+    });
+    const ctx = canvas.getContext("2d");
+    const imageData = new ImageData(width, height);
+    for (let i = 0; i < height * width; ++i) {
+      const j = i * 4;
+      imageData.data[j + 0] = data[i] * 255;
+      imageData.data[j + 1] = data[i] * 255;
+      imageData.data[j + 2] = data[i] * 255;
+      imageData.data[j + 3] = 255;
+    }
+    ctx.putImageData(imageData, 0, 0);
+  }, [canvasRef]);
+
+  return <canvas ref={canvasRef} width={width} height={height} />;
+}
 
 // https://github.com/vinothpandian/react-sketch-canvas
 // https://vinoth.info/react-sketch-canvas/
 export default function Section() {
   const canvasRef = useRef(null);
+  const [status, setStatus] = useState("Loading data...");
+  const [message, setMessage] = useState("");
+  const [images, setImages] = useState([]);
 
   const handleClickClear = useCallback(
     () => canvasRef.current.clearCanvas(),
@@ -28,17 +67,14 @@ export default function Section() {
 
   useEffect(() => {
     // https://github.com/tensorflow/tfjs-examples/blob/master/mnist-core/ui.js
-    const statusElement = document.getElementById("status");
-    const messageElement = document.getElementById("message");
-    const imagesElement = document.getElementById("images");
-
     function isTraining() {
-      statusElement.innerText = "Training...";
+      setStatus("Training...");
     }
 
     const lossArr = [];
+
     function trainingLog(loss, iteration) {
-      messageElement.innerText = `loss[${iteration}]: ${loss}`;
+      setMessage(`loss[${iteration}]: ${loss}`);
       lossArr.push({ x: iteration, y: loss });
       const container = { name: "Loss", tab: "Training" };
       const options = {
@@ -50,60 +86,31 @@ export default function Section() {
     }
 
     function showTestResults(batch, predictions, labels) {
-      statusElement.innerText = "Testing...";
+      setStatus("Testing...");
 
-      const testExamples = batch.xs.shape[0];
-      let totalCorrect = 0;
-      for (let i = 0; i < testExamples; i++) {
-        const image = batch.xs.slice([i, 0], [1, batch.xs.shape[1]]);
-
-        const div = document.createElement("div");
-        div.className = "pred-container";
-
-        const canvas = document.createElement("canvas");
-        draw(image.flatten(), canvas);
-
-        const pred = document.createElement("div");
-
+      const images = batch.xs.arraySync().map((image, i) => {
         const prediction = predictions[i];
         const label = labels[i];
         const correct = prediction === label;
-        if (correct) {
-          totalCorrect++;
-        }
+        return {
+          image,
+          correct,
+          prediction,
+        };
+      });
 
-        pred.className = `pred ${correct ? "pred-correct" : "pred-incorrect"}`;
-        pred.innerText = `pred: ${prediction}`;
+      setImages(images);
 
-        div.appendChild(pred);
-        div.appendChild(canvas);
-
-        imagesElement.appendChild(div);
-      }
+      const testExamples = images.length;
+      const totalCorrect = images.filter(({ correct }) => correct).length;
 
       const accuracy = (100 * totalCorrect) / testExamples;
       const displayStr = `Accuracy: ${accuracy.toFixed(
         2
       )}% (${totalCorrect} / ${testExamples})`;
-      messageElement.innerText = `${displayStr}\n`;
+      setMessage(`${displayStr}\n`);
+      // messageElement.innerText = `${displayStr}\n`;
       console.log(displayStr);
-    }
-
-    function draw(image, canvas) {
-      const [width, height] = [28, 28];
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext("2d");
-      const imageData = new ImageData(width, height);
-      const data = image.dataSync();
-      for (let i = 0; i < height * width; ++i) {
-        const j = i * 4;
-        imageData.data[j + 0] = data[i] * 255;
-        imageData.data[j + 1] = data[i] * 255;
-        imageData.data[j + 2] = data[i] * 255;
-        imageData.data[j + 3] = 255;
-      }
-      ctx.putImageData(imageData, 0, 0);
     }
 
     const ui = {
@@ -139,15 +146,15 @@ export default function Section() {
     }
 
     mnist();
-
-    console.log({ canvasRef });
   }, []);
 
   return (
     <section className={styles.Section}>
       <h2>Draw</h2>
+
       <button onClick={handleClickClear}>Clear</button>
       <button onClick={handleClickExport}>Export</button>
+
       <ReactSketchCanvas
         ref={canvasRef}
         className={styles.Canvas}
@@ -173,13 +180,20 @@ export default function Section() {
 
       <section>
         <p className="section-head">Status</p>
-        <div id="status">Loading data...</div>
-        <div id="message"></div>
+        <div id="status">{status}</div>
+        <div id="message">{message}</div>
       </section>
 
       <section>
         <p className="section-head">Test Samples</p>
-        <div id="images"></div>
+        <div id="images">
+          {images.map(({ correct, image, prediction }, key) => (
+            <PredContainer key={key}>
+              <Pred correct={correct}>{prediction}</Pred>
+              <Image>{image}</Image>
+            </PredContainer>
+          ))}
+        </div>
       </section>
     </section>
   );
