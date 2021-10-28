@@ -12,11 +12,11 @@
     "@mediapipe/drawing_utils": "^0.3.1620248257",
     "@mediapipe/pose": "^0.4.1633558788",
     "@tensorflow-models/coco-ssd": "^2.2.2",
-    "@tensorflow/tfjs": "^3.10.0",
-    "@tensorflow/tfjs-backend-cpu": "^3.10.0",
-    "@tensorflow/tfjs-backend-webgl": "^3.10.0",
-    "@tensorflow/tfjs-converter": "^3.10.0",
-    "@tensorflow/tfjs-core": "^3.10.0",
+    "@tensorflow/tfjs": "^3.11.0",
+    "@tensorflow/tfjs-backend-cpu": "^3.11.0",
+    "@tensorflow/tfjs-backend-webgl": "^3.11.0",
+    "@tensorflow/tfjs-converter": "^3.11.0",
+    "@tensorflow/tfjs-core": "^3.11.0",
     "@tensorflow/tfjs-vis": "^1.5.1",
     "buffer": "^6.0.3",
     "classnames": "^2.3.1",
@@ -27,7 +27,7 @@
     "raf": "^3.4.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-sketch-canvas": "^6.0.3",
+    "react-sketch-canvas": "^6.1.0",
     "react-webcam": "^6.0.0"
   },
   "devDependencies": {
@@ -57,6 +57,6 @@
     "style-loader": "^3.3.1",
     "webpack": "^5.60.0",
     "webpack-cli": "^4.9.1",
-    "webpack-dev-server": "^4.3.1"
+    "webpack-dev-server": "^4.4.0"
   }
 }
