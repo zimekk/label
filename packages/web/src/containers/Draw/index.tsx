@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ReactSketchCanvas } from "react-sketch-canvas";
+import { Subject } from "rxjs";
+import { debounceTime } from "rxjs/operators";
 import cx from "classnames";
 import styles from "./styles.module.scss";
 
@@ -23,6 +25,16 @@ function Pred({ correct, children: prediction }) {
   );
 }
 
+function getImage(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.addEventListener("load", () => resolve(img));
+    img.addEventListener("error", (err) => reject(err));
+    img.src = url;
+    img.setAttribute("crossorigin", "anonymous");
+  });
+}
+
 function predict(pixels) {
   const tensor = tf.browser
     .fromPixels(pixels)
@@ -31,7 +43,7 @@ function predict(pixels) {
     .expandDims(2)
     .expandDims()
     .toFloat();
-  console.log(model.predict(tensor.div(255.0)));
+  return model.predict(tensor.div(255.0))[0];
 }
 
 function Canvas({ children: data, width = 28, height = 28 }) {
@@ -68,6 +80,8 @@ function Canvas({ children: data, width = 28, height = 28 }) {
   );
 }
 
+const subject$ = new Subject();
+
 // https://github.com/vinothpandian/react-sketch-canvas
 // https://vinoth.info/react-sketch-canvas/
 export default function Section() {
@@ -75,9 +89,20 @@ export default function Section() {
   const [status, setStatus] = useState("Loading data...");
   const [message, setMessage] = useState("");
   const [images, setImages] = useState([]);
+  const [predicted, setPredicted] = useState(null);
 
-  const handleClickClear = useCallback(
-    () => canvasRef.current.clearCanvas(),
+  const handleClickReset = useCallback(
+    () => (canvasRef.current.resetCanvas(), setPredicted(null)),
+    [canvasRef]
+  );
+
+  const handleClickUndo = useCallback(
+    () => canvasRef.current.undo(),
+    [canvasRef]
+  );
+
+  const handleClickRedo = useCallback(
+    () => canvasRef.current.redo(),
     [canvasRef]
   );
 
@@ -92,17 +117,32 @@ export default function Section() {
 
   const handleClickPredict = useCallback(
     () =>
-      canvasRef.current.exportImage("png").then((url) =>
-        new Promise((resolve, reject) => {
-          const img = new Image();
-          img.addEventListener("load", () => resolve(img));
-          img.addEventListener("error", (err) => reject(err));
-          img.src = url;
-          img.setAttribute("crossorigin", "anonymous");
-        }).then(predict)
-      ),
+      canvasRef.current
+        .exportImage("png")
+        .then(getImage)
+        .then(predict)
+        .then(setPredicted),
     [canvasRef]
   );
+
+  const handleStroke = useCallback(() => console.log(["stroke"]), [canvasRef]);
+
+  const handleChange = useCallback(
+    () => console.log(["change"]) || subject$.next(null),
+    [canvasRef]
+  );
+
+  useEffect(() => {
+    const subscription = subject$.pipe(debounceTime(400)).subscribe(() => {
+      canvasRef.current
+        .exportImage("png")
+        .then(getImage)
+        .then(predict)
+        .then((predicted) => console.log({ predicted }) || predicted)
+        .then(setPredicted);
+    });
+    return subscription.unsubscribe;
+  }, [canvasRef]);
 
   useEffect(() => {
     // https://github.com/tensorflow/tfjs-examples/blob/master/mnist-core/ui.js
@@ -191,9 +231,12 @@ export default function Section() {
     <section className={styles.Section}>
       <h2>Draw</h2>
 
-      <button onClick={handleClickClear}>Clear</button>
+      <button onClick={handleClickReset}>Reset</button>
+      <button onClick={handleClickUndo}>Undo</button>
+      <button onClick={handleClickRedo}>Redo</button>
       <button onClick={handleClickExport}>Export</button>
       <button onClick={handleClickPredict}>Predict</button>
+      {predicted !== null && <span>pred: {predicted}</span>}
 
       <ReactSketchCanvas
         ref={canvasRef}
@@ -203,6 +246,8 @@ export default function Section() {
         strokeWidth={24}
         strokeColor="white"
         canvasColor="black"
+        onStroke={handleStroke}
+        onChange={handleChange}
       />
 
       <section className="title-area">
