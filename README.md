@@ -2,6 +2,12 @@
 
 [zimekk.github.io/label](https://zimekk.github.io/label)
 
+## related
+
+- https://github.com/tensorflow/tfjs-examples/tree/master/mnist-core
+- https://github.com/bensonruan/Hand-Written-Digit-Recognition
+- https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection
+
 ## settings
 
 ```sh
