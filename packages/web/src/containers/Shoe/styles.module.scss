@@ -1,0 +1,20 @@
+.Section {
+  color: blue;
+}
+.Container {
+  position: relative;
+  .Webcam {
+    z-index: 0;
+  }
+  .Canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+  .Webcam,
+  .Canvas {
+    width: 640px;
+    height: 480px;
+  }
+}

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@mediapipe/drawing_utils": "^0.3.1620248257",
+    "@mediapipe/objectron": "^0.3.1627447724",
     "@mediapipe/pose": "^0.4.1633558788",
     "@tensorflow-models/coco-ssd": "^2.2.2",
     "@tensorflow-models/face-landmarks-detection": "^0.0.3",

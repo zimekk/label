@@ -10,6 +10,7 @@ const PAGES = {
   coco: lazy(() => import("./Coco")),
   face: lazy(() => import("./Face")),
   pose: lazy(() => import("./Pose")),
+  shoe: lazy(() => import("./Shoe")),
   hello: lazy(() => import("./Hello")),
 };
 
