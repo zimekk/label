@@ -11,6 +11,7 @@ const PAGES = {
   face: lazy(() => import("./Face")),
   pose: lazy(() => import("./Pose")),
   shoe: lazy(() => import("./Shoe")),
+  track: lazy(() => import("./Track")),
   hello: lazy(() => import("./Hello")),
 };
 

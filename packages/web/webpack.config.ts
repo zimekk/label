@@ -37,7 +37,7 @@ const config = {
         ],
       },
       {
-        test: /\.(mp3|ogg|png|avi)$/,
+        test: /\.(avi|mp3|mp4|ogg|png)$/,
         use: ["file-loader"],
       },
       {
@@ -60,6 +60,8 @@ const config = {
     // https://webpack.js.org/configuration/resolve/#resolvefallback
     fallback: {
       buffer: require.resolve("buffer"),
+      crypto: false,
+      fs: false,
       stream: require.resolve("stream-browserify"),
     },
   },

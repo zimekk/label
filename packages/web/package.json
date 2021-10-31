@@ -9,6 +9,7 @@
     "start": "NODE_ENV=development webpack serve --mode development"
   },
   "dependencies": {
+    "@cloud-annotations/object-tracking": "^0.0.5",
     "@mediapipe/drawing_utils": "^0.3.1620248257",
     "@mediapipe/objectron": "^0.3.1627447724",
     "@mediapipe/pose": "^0.4.1633558788",
