@@ -7,6 +7,8 @@
 - https://github.com/tensorflow/tfjs-examples/tree/master/mnist-core
 - https://github.com/bensonruan/Hand-Written-Digit-Recognition
 - https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection
+- https://github.com/cloud-annotations/cloud-annotations
+- https://github.com/tensorflow/tfjs-examples/tree/master/simple-object-detection
 
 ## settings
 
