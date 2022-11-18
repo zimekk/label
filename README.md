@@ -21,13 +21,13 @@ pbcopy < /tmp/ACTIONS_DEPLOY_KEY # Secrets - New repository secret
 ## install
 
 ```sh
-nvm install v12
+nvm install v14
 npm i -g yarn
 ```
 
 ```sh
-node -v # v12.19.0
-yarn -v # 1.22.10
+node -v # v14.18.2
+yarn -v # 1.22.19
 ```
 
 ## run
