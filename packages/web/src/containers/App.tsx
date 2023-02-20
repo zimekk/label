@@ -9,6 +9,7 @@ const PAGES = {
   draw: lazy(() => import("./Draw")),
   face: lazy(() => import("./Face")),
   pose: lazy(() => import("./Pose")),
+  reader: lazy(() => import("./Reader")),
   shoe: lazy(() => import("./Shoe")),
   toxicity: lazy(() => import("./Toxicity")),
   track: lazy(() => import("./Track")),

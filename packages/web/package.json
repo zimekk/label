@@ -34,7 +34,8 @@
     "react-dom": "^18.2.0",
     "react-sketch-canvas": "^6.2.0",
     "react-webcam": "^7.0.1",
-    "rxjs": "^7.8.0"
+    "rxjs": "^7.8.0",
+    "tesseract.js": "^4.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",

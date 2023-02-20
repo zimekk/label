@@ -1,0 +1,13 @@
+.Section {
+  color: orange;
+  flex: 1;
+}
+.Container {
+  display: flex;
+  flex-direction: column;
+}
+.Text {
+  display: flex;
+  margin: 1em;
+  // flex: 1;
+}
