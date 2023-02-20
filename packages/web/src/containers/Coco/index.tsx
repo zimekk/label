@@ -29,10 +29,14 @@ const drawRect = (detections, ctx) => {
 
 // https://github.com/nicknochnack/ReactComputerVisionTemplate/blob/main/src/App.js
 export default function Section() {
-  const webcamRef = useRef(null);
-  const canvasRef = useRef(null);
+  const webcamRef = useRef<Webcam>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const detect = async (net) => {
+    if (!webcamRef.current?.video || !canvasRef.current) {
+      return;
+    }
+
     const { video } = webcamRef.current;
 
     // Check data is available
