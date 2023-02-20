@@ -1,28 +1,27 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
-import { hot } from "react-hot-loader/root";
 import history from "history/browser";
 import styles from "./App.module.scss";
 
 const Spinner = () => <span>Loading...</span>;
 
 const PAGES = {
-  draw: lazy(() => import("./Draw")),
   coco: lazy(() => import("./Coco")),
+  draw: lazy(() => import("./Draw")),
   face: lazy(() => import("./Face")),
   pose: lazy(() => import("./Pose")),
   shoe: lazy(() => import("./Shoe")),
   toxicity: lazy(() => import("./Toxicity")),
   track: lazy(() => import("./Track")),
   hello: lazy(() => import("./Hello")),
-};
+} as const;
 
 const getPage = (location: { hash: string }) => {
-  const [, hash = Object.keys(PAGES)[0]] =
+  const [, hash = Object.keys(PAGES).pop()] =
     decodeURI(location.hash).match(/^#(.+)/) || [];
   return hash;
 };
 
-function App() {
+export default function App() {
   const [page, setPage] = useState(getPage(history.location));
 
   useEffect(() =>
@@ -30,7 +29,7 @@ function App() {
     history.listen(({ location }) => setPage(getPage(location)))
   );
 
-  const Page = PAGES[page] || null;
+  const Page = PAGES[page];
 
   return (
     <section className={styles.App}>
@@ -49,5 +48,3 @@ function App() {
     </section>
   );
 }
-
-export default hot(App);

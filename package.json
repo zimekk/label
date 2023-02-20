@@ -41,7 +41,7 @@
   },
   "scripts": {
     "build": "yarn workspaces run build",
-    "clean": "rm -rf packages/*/public packages/*/lib",
+    "clean": "rm -rf packages/*/public packages/*/lib packages/*/yarn-error.log yarn-error.log",
     "lint": "eslint . --ext .json,.js,.jsx,.ts,.tsx",
     "reset": "rm -rf node_modules packages/*/node_modules",
     "serve": "yarn workspace @dev/app serve",
